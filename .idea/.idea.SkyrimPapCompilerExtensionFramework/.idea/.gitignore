@@ -1,0 +1,11 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Rider ignored files
+/modules.xml
+/contentModel.xml
+/.idea.SkyrimPapCompilerExtensionFramework.iml
+/projectSettingsUpdater.xml
+# Datasource local storage ignored files
+/../../../../../../../../../../:\SteamLibrary\steamapps\common\Skyrim Special Edition\NetMods\SkyrimPapCompilerExtensionFramework\.idea\.idea.SkyrimPapCompilerExtensionFramework\.idea/dataSources/
+/dataSources.local.xml
