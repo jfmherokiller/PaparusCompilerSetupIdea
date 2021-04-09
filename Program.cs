@@ -11,6 +11,7 @@ namespace SkyrimPapCompilerExtensionFramework
 {
     internal class Program
     {
+        public static List<IPlugin> PluginClasses;
         public static Harmony PatchHome;
         static Assembly LoadPlugin(string relativePath)
         {
@@ -47,20 +48,21 @@ namespace SkyrimPapCompilerExtensionFramework
             var BasePaths = Directory.EnumerateFiles(Path.Combine(directoryName,"Plugins"));
             var BasePluginPaths = BasePaths.Where((Pathme)=> Pathme.Contains("dll"));
             var pluginPaths = BasePluginPaths.Where((Pathme)=> Path.GetFileName(Pathme).StartsWith("Plugin_"));
-            var commands = pluginPaths.SelectMany(pluginPath =>
+            var Assemblies = pluginPaths.Select(LoadPlugin).ToList();
+            //Allow for any needed Initalizations
+            
+            PluginClasses = Assemblies.SelectMany(CreateCommands).ToList();
+            foreach (var pluginClass in PluginClasses)
             {
-                var pluginAssembly = LoadPlugin(pluginPath);
-                PatchHome.PatchAll(pluginAssembly);
-                return CreateCommands(pluginAssembly);
-            }).ToList();
-            foreach (var command in commands)
-            {
-                command.Execute();
+                pluginClass.Execute();
             }
+            //Evaluate the patches
+            foreach (var assembly in Assemblies) PatchHome.PatchAll(assembly);
         }
         public static void Main(string[] args)
         {
             PatchHome = new Harmony("PapCompiler");
+            PatchHome.PatchAll();
             try
             {
                 LoadPluginStuffs(PatchHome);
